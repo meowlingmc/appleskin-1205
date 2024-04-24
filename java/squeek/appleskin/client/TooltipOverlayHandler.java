@@ -3,9 +3,9 @@ package squeek.appleskin.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.item.Item;
 import net.minecraft.text.TextVisitFactory;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
-import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
@@ -84,7 +84,7 @@ public class TooltipOverlayHandler
 		@Override
 		public TextContent getContent()
 		{
-			return TextContent.EMPTY;
+			return PlainTextContent.EMPTY;
 		}
 
 		static List<Text> emptySiblings = new ArrayList<Text>();
@@ -201,7 +201,7 @@ public class TooltipOverlayHandler
 		INSTANCE = new TooltipOverlayHandler();
 	}
 
-	public void onItemTooltip(ItemStack hoveredStack, PlayerEntity player, TooltipContext context, List tooltip)
+	public void onItemTooltip(ItemStack hoveredStack, PlayerEntity player, Item.TooltipContext context, List tooltip)
 	{
 		// When hoveredStack or tooltip is null an unknown exception occurs.
 		// If ModConfig.INSTANCE is null then we're probably still in the init phase

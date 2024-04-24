@@ -1,8 +1,10 @@
 package squeek.appleskin.network;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+import net.minecraft.network.codec.PacketCodec;
+import net.minecraft.network.packet.s2c.common.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -12,15 +14,14 @@ import java.util.UUID;
 
 public class SyncHandler
 {
-	public static final Identifier EXHAUSTION_SYNC = new Identifier("appleskin", "exhaustion_sync");
-	public static final Identifier SATURATION_SYNC = new Identifier("appleskin", "saturation_sync");
-
-	private static CustomPayloadS2CPacket makeSyncPacket(Identifier identifier, float val)
-	{
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeFloat(val);
-		return new CustomPayloadS2CPacket(identifier, buf);
-	}
+    public static final PacketCodec HOLDER_FLOAT_CODEC = new PacketCodec<ByteBuf, Float>() {
+        public Float decode(ByteBuf byteBuf) {
+            return byteBuf.readFloat();
+        }
+        public void encode(ByteBuf byteBuf, Float blockPos) {
+            byteBuf.writeFloat(blockPos);
+        }
+    };
 
 	/*
 	 * Sync saturation (vanilla MC only syncs when it hits 0)
@@ -37,15 +38,15 @@ public class SyncHandler
 		float saturation = player.getHungerManager().getSaturationLevel();
 		if (lastSaturationLevel == null || lastSaturationLevel != saturation)
 		{
-			player.networkHandler.sendPacket(makeSyncPacket(SATURATION_SYNC, saturation));
+			player.networkHandler.sendPacket(new CustomPayloadS2CPacket(new SaturationSyncPayload(saturation)));
 			lastSaturationLevels.put(player.getUuid(), saturation);
 		}
 
 		float exhaustionLevel = player.getHungerManager().getExhaustion();
 		if (lastExhaustionLevel == null || Math.abs(lastExhaustionLevel - exhaustionLevel) >= 0.01f)
 		{
-			player.networkHandler.sendPacket(makeSyncPacket(EXHAUSTION_SYNC, exhaustionLevel));
-			lastExhaustionLevels.put(player.getUuid(), exhaustionLevel);
+            player.networkHandler.sendPacket(new CustomPayloadS2CPacket(new ExhaustionSyncPayload(exhaustionLevel)));
+            lastExhaustionLevels.put(player.getUuid(), exhaustionLevel);
 		}
 	}
 

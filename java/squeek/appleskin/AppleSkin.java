@@ -1,6 +1,8 @@
 package squeek.appleskin;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,8 +11,10 @@ import squeek.appleskin.client.DebugInfoHandler;
 import squeek.appleskin.client.HUDOverlayHandler;
 import squeek.appleskin.client.TooltipOverlayHandler;
 import squeek.appleskin.network.ClientSyncHandler;
+import squeek.appleskin.network.ExhaustionSyncPayload;
+import squeek.appleskin.network.SaturationSyncPayload;
 
-public class AppleSkin implements ClientModInitializer
+public class AppleSkin implements ClientModInitializer, ModInitializer
 {
 	public static final Logger LOGGER = LogManager.getLogger();
 
@@ -33,4 +37,10 @@ public class AppleSkin implements ClientModInitializer
 			}
 		});
 	}
+
+    @Override
+    public void onInitialize() {
+        PayloadTypeRegistry.playS2C().register(ExhaustionSyncPayload.ID, ExhaustionSyncPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(SaturationSyncPayload.ID, SaturationSyncPayload.CODEC);
+    }
 }

@@ -27,6 +27,9 @@
     ],
     "rei_client": [
       "squeek.appleskin.client.REITooltipPlugin"
+    ],
+    "main": [
+      "squeek.appleskin.AppleSkin"
     ]
   },
   "mixins": [

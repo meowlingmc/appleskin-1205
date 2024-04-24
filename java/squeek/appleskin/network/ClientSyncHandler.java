@@ -9,17 +9,15 @@ public class ClientSyncHandler
 	@Environment(EnvType.CLIENT)
 	public static void init()
 	{
-		ClientPlayNetworking.registerGlobalReceiver(SyncHandler.EXHAUSTION_SYNC, (client, handler, buf, responseSender) -> {
-			float exhaustion = buf.readFloat();
-			client.execute(() -> {
-				client.player.getHungerManager().setExhaustion(exhaustion);
+		ClientPlayNetworking.registerGlobalReceiver(ExhaustionSyncPayload.ID, (payload, ctx) -> {
+			ctx.client().execute(() -> {
+				ctx.player().getHungerManager().setExhaustion(payload.value());
 			});
 		});
-		ClientPlayNetworking.registerGlobalReceiver(SyncHandler.SATURATION_SYNC, (client, handler, buf, responseSender) -> {
-			float saturation = buf.readFloat();
-			client.execute(() -> {
-				client.player.getHungerManager().setSaturationLevel(saturation);
-			});
+		ClientPlayNetworking.registerGlobalReceiver(SaturationSyncPayload.ID, (payload, ctx) -> {
+            ctx.client().execute(() -> {
+                ctx.player().getHungerManager().setSaturationLevel(payload.value());
+            });
 		});
 	}
 }

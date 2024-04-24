@@ -34,8 +34,10 @@ public class DebugInfoHandler
 		if (mc == null || mc.player == null || mc.player.getHungerManager() == null)
 			return;
 
-		if (!mc.options.debugEnabled)
-			return;
+        // Not sure where this is? But this shouldn't be needed.
+        // If this was a "reduced debug info" thing then you were doing it wrong.
+		//if (!mc.options.debugEnabled)
+        //	return;
 
 		HungerManager stats = mc.player.getHungerManager();
 		float curExhaustion = stats.getExhaustion();
